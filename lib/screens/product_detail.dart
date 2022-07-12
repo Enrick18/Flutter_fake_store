@@ -5,10 +5,12 @@ import '../models/product.dart';
 import '../services/api_service.dart';
 
 class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({Key? key, required this.id}) : super(key: key);
+  String userId;
+  int productId;
+  late Product? product;
+  ProductDetailScreen({Key? key,required this.productId, required this.userId}) : super(key: key);
   ApiService get service => GetIt.I<ApiService>();
 
-  final int id;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class ProductDetailScreen extends StatelessWidget {
       body: Container(
         margin: const EdgeInsets.all(20),
         child: FutureBuilder(
-          future: service.getProduct(id),
+          future: service.getProduct(productId),
           builder: (BuildContext context, AsyncSnapshot<Product?> snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
@@ -84,7 +86,7 @@ class ProductDetailScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: () async {
-          await service.updateCart(1, id);
+          await service.updateCart(product!.id, userId, 1);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Product added to cart'),

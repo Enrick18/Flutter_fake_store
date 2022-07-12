@@ -5,7 +5,8 @@ import 'package:get_it/get_it.dart';
 import '../services/api_service.dart';
 
 class AllCategoryScreen extends StatelessWidget {
-  const AllCategoryScreen({Key? key}) : super(key: key);
+  final String userToken;
+  AllCategoryScreen({Key? key, required this.userToken}) : super(key: key);
 
   ApiService get service => GetIt.I<ApiService>();
 
@@ -39,6 +40,7 @@ class AllCategoryScreen extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => ProductsByCategoryScreen(
                           categoryName: categories[index],
+                          userToken: userToken,
                         ),
                       ),
                     ),

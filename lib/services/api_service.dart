@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 
 import '../models/auth.dart';
 import '../models/cart.dart';
-import '../models/cart_update.dart';
 import '../models/product.dart';
 
 class ApiService {
@@ -49,7 +48,7 @@ class ApiService {
 
   Future<List<Product>> getProductsByCategory(String categoryName) {
     return http
-        .get(Uri.parse('$baseUrl/products/category/$categoryName'))
+        .get(Uri.parse('$baseUrl/products/category/$categoryName'), headers: headers)
         .then((data) {
       final products = <Product>[];
       if (data.statusCode == 200) {
@@ -64,7 +63,7 @@ class ApiService {
   }
 
   Future<List<String>> getAllCategories() {
-    return http.get(Uri.parse('$baseUrl/products/categories')).then((data) {
+    return http.get(Uri.parse('$baseUrl/products/categories'), headers: headers).then((data) {
       final categories = <String>[];
       if (data.statusCode == 200) {
         final jsonData = json.decode(data.body);
@@ -78,7 +77,7 @@ class ApiService {
   }
 
   Future<Cart?> getCart(String id) {
-    return http.get(Uri.parse('$baseUrl/carts/$id')).then((data) {
+    return http.get(Uri.parse('$baseUrl/carts/$id'), headers: headers).then((data) {
       if (data.statusCode == 200) {
         final jsonData = json.decode(data.body);
         return Cart.fromJson(jsonData);
@@ -87,24 +86,26 @@ class ApiService {
     }).catchError((err) => print(err));
   }
 
-  Future<void> updateCart(int cartId, int productId) {
-    final cartUpdate =
-    CartUpdate(userId: cartId, date: DateTime.now(), products: [
-      {'productId': productId, 'quantity': 1}
-    ]);
+  Future<void> updateCart(int cartId, String userId, int productId) {
     return http
         .put(Uri.parse('$baseUrl/carts/$cartId'),
-        body: json.encode(cartUpdate.toJson()), headers: headers)
+        body: jsonEncode(<String, dynamic>{
+          "userId": userId,
+          "date": DateTime.now().toString(),
+          "products": [
+            {"productId": productId, "quantity": 1}
+          ]
+        }))
         .then((data) {
       if (data.statusCode == 200) {
         final jsonData = json.decode(data.body);
         print(jsonData);
       }
-    }).catchError((err) => print(err));
+    }).catchError((error) => print(error));
   }
 
   Future<void> deleteCart(String cartId) {
-    return http.delete(Uri.parse('$baseUrl/carts/$cartId')).then((data) {
+    return http.delete(Uri.parse('$baseUrl/carts/$cartId'), headers: headers).then((data) {
       if (data.statusCode == 200) {
         final jsonData = json.decode(data.body);
         print(jsonData);

@@ -7,8 +7,8 @@ import 'product_detail.dart';
 
 class ProductsByCategoryScreen extends StatelessWidget {
   final String categoryName;
-
-  const ProductsByCategoryScreen({Key? key, required this.categoryName})
+  final String userToken;
+  const ProductsByCategoryScreen({Key? key, required this.categoryName, required this.userToken})
       : super(key: key);
 
   ApiService get service => GetIt.I<ApiService>();
@@ -45,7 +45,7 @@ class ProductsByCategoryScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ProductDetailScreen(id: products[index].id),
+                      builder: (_) => ProductDetailScreen(productId: products[index].id, userId: userToken ,),
                     ),
                   );
                 },

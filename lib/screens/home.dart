@@ -8,7 +8,8 @@ import 'cart_screen.dart';
 import 'product_detail.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final String userToken;
+  HomeScreen({Key? key, required this.userToken}) : super(key: key);
   ApiService get service => GetIt.I<ApiService>();
 
   @override
@@ -23,7 +24,7 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.view_list),
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const AllCategoryScreen()),
+              MaterialPageRoute(builder: (_) => AllCategoryScreen(userToken: userToken,)),
             ),
           ),
           IconButton(
@@ -62,7 +63,7 @@ class HomeScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ProductDetailScreen(id: index+1,),
+                          builder: (_) => ProductDetailScreen(productId: product.id, userId: userToken,),
                         ),
                       );
                     },
