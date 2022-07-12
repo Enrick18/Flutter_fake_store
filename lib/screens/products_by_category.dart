@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import '../models/product.dart';
 import '../services/api_service.dart';
@@ -10,16 +11,18 @@ class ProductsByCategoryScreen extends StatelessWidget {
   const ProductsByCategoryScreen({Key? key, required this.categoryName})
       : super(key: key);
 
+  ApiService get service => GetIt.I<ApiService>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(categoryName),
+        title: Text(categoryName.toUpperCase()),
         centerTitle: true,
         backgroundColor: Colors.red,
       ),
       body: FutureBuilder(
-        future: getProductsByCategory(categoryName),
+        future: service.getProductsByCategory(categoryName),
         builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -31,18 +34,18 @@ class ProductsByCategoryScreen extends StatelessWidget {
             itemCount: products.length,
             itemBuilder: ((context, index) {
               return ListTile(
-                title: Text('[title]'),
+                title: Text(products[index].title),
                 leading: Image.network(
-                  '[image]',
+                  products[index].image ?? '',
                   height: 50,
                   width: 50,
                 ),
-                subtitle: Text('\$price'),
+                subtitle: Text('\$${products[index].price}'),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ProductDetailScreen(id: productId),
+                      builder: (_) => ProductDetailScreen(id: products[index].id),
                     ),
                   );
                 },
